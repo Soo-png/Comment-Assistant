@@ -572,50 +572,56 @@
     <div class="card-body">
       <div class="info-row" style="margin-bottom:14px;">
         <div class="field">
-          <label class="field-label">Student Name</label>
+          <label class="field-label">Preferred Name</label>
           <input type="text" id="student-name" placeholder="e.g. Ahmad, Sarah…" />
         </div>
         <div class="field">
           <label class="field-label">Gender</label>
           <div class="gender-toggle">
-            <button class="gender-btn" id="btn-male" onclick="selectGender('male')">♂ Male</button>
-            <button class="gender-btn" id="btn-female" onclick="selectGender('female')">♀ Female</button>
+            <button class="gender-btn" id="btn-male" onclick="selectGender('male')">&#9794; Male</button>
+            <button class="gender-btn" id="btn-female" onclick="selectGender('female')">&#9792; Female</button>
           </div>
         </div>
       </div>
 
-      <!-- Subject -->
+      <!-- Year / Stream / Subject -->
       <div class="subject-row">
         <div class="field">
-          <label class="field-label">Subject</label>
+          <label class="field-label">Year Group</label>
           <div class="select-wrap">
-            <select id="subject-select" onchange="onSubjectChange()">
-              <option value="">— Select a subject —</option>
-              <option value="English Language">English Language</option>
-              <option value="Mathematics">Mathematics</option>
-              <option value="Science">Science</option>
-              <option value="Chinese Language">Chinese Language</option>
-              <option value="Malay Language">Malay Language</option>
-              <option value="Tamil Language">Tamil Language</option>
-              <option value="History">History</option>
-              <option value="Geography">Geography</option>
-              <option value="Social Studies">Social Studies</option>
-              <option value="Art">Art</option>
-              <option value="Music">Music</option>
-              <option value="Physical Education">Physical Education</option>
-              <option value="Design & Technology">Design &amp; Technology</option>
-              <option value="Food & Consumer Education">Food &amp; Consumer Education</option>
-              <option value="Literature">Literature</option>
-              <option value="Higher Chinese">Higher Chinese</option>
-              <option value="Higher Malay">Higher Malay</option>
-              <option value="Higher Tamil">Higher Tamil</option>
-              <option value="other">Other (type below)</option>
+            <select id="year-select" onchange="onYearChange()">
+              <option value="">&#8212; Select year &#8212;</option>
+              <option value="1">Year 1</option>
+              <option value="2">Year 2</option>
+              <option value="3">Year 3</option>
+              <option value="4">Year 4</option>
+              <option value="5">Year 5</option>
+              <option value="6">Year 6</option>
+              <option value="7">Year 7</option>
+              <option value="8">Year 8</option>
+              <option value="9">Year 9</option>
+              <option value="10">Year 10</option>
+              <option value="11">Year 11</option>
             </select>
           </div>
         </div>
-        <div class="field custom" id="custom-subject-wrap">
-          <label class="field-label">Custom Subject Name</label>
-          <input type="text" id="custom-subject" placeholder="e.g. Drama, ICT…" />
+        <div class="field" id="stream-wrap" style="display:none;">
+          <label class="field-label">Stream</label>
+          <div class="select-wrap">
+            <select id="stream-select" onchange="onStreamChange()">
+              <option value="">&#8212; Select stream &#8212;</option>
+              <option value="Science">Science Stream</option>
+              <option value="Commerce">Commerce Stream</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" id="subject-wrap" style="display:none;">
+          <label class="field-label">Subject</label>
+          <div class="select-wrap">
+            <select id="subject-select">
+              <option value="">&#8212; Select subject &#8212;</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
@@ -682,6 +688,28 @@ const CATEGORIES = [
     }
   },
   {
+    id: 'classwork',
+    icon: '🏫',
+    name: 'Classwork',
+    remarkPlaceholder: 'e.g. Completes tasks ahead of time and helps peers; could share ideas more verbally…',
+    keywords: {
+      good: ['actively participates','contributes ideas','on-task','helpful to peers','quick to complete','engaged','takes initiative','asks good questions','collaborative','focused','productive','demonstrates understanding','responsive','sharp','reliable'],
+      mid:  ['sometimes participates','occasionally off-task','needs prompting','average contribution','inconsistent','passive at times','variable pace','partially engaged','selective participation','needs encouragement','average productivity','can do better','dependent on teacher','distracted at times','mediocre'],
+      poor: ['rarely participates','frequently off-task','uncooperative','disruptive','disengaged','slow to start','avoids tasks','ignores instructions','minimal contribution','refuses to engage','wastes class time','poor effort','problematic','inattentive','counterproductive']
+    }
+  },
+  {
+    id: 'project',
+    icon: '🗂️',
+    name: 'Project',
+    remarkPlaceholder: 'e.g. Led the group effectively during the science model project; presentation was confident…',
+    keywords: {
+      good: ['outstanding output','well-researched','highly organised','creative','collaborative','takes ownership','meets deadlines','thorough','innovative','detailed planning','strong presentation','exceeds expectations','initiative shown','impactful','self-motivated'],
+      mid:  ['adequate effort','partially completed','needs more depth','some collaboration','met basic requirements','average quality','inconsistent planning','satisfactory output','could be more organised','needs guidance','surface-level research','variable contribution','acceptable','room to improve','dependent'],
+      poor: ['poorly executed','incomplete','minimal effort','unorganised','fails to collaborate','misses deadlines','below standard','lacks planning','insufficient research','very weak output','careless','unsatisfactory','barely attempted','neglected','requires significant support']
+    }
+  },
+  {
     id: 'homework',
     icon: '📚',
     name: 'Homework Submission',
@@ -704,17 +732,6 @@ const CATEGORIES = [
     }
   },
   {
-    id: 'exam',
-    icon: '📋',
-    name: 'Exam Performance',
-    remarkPlaceholder: 'e.g. Performed well in Paper 1 but lost marks on open-ended questions in Paper 2…',
-    keywords: {
-      good: ['distinction','excellent','top of class','well-prepared','strong grasp','high marks','outstanding performance','exceeded expectations','mastery demonstrated','impressive','confident','comprehensive','exemplary','remarkable','stellar'],
-      mid:  ['average','borderline pass','needs more revision','satisfactory','moderate','room to grow','could do better','passing','developing','inconsistent','adequate','fair performance','below potential','improving','needs support'],
-      poor: ['failed','very low marks','significant gaps','needs remediation','below passing','weak','struggling','critical intervention needed','poor performance','unsatisfactory','far below expectations','insufficient','alarming','negligible','must improve urgently']
-    }
-  },
-  {
     id: 'coursework',
     icon: '✏️',
     name: 'Coursework',
@@ -726,20 +743,20 @@ const CATEGORIES = [
     }
   },
   {
-    id: 'classwork',
-    icon: '🏫',
-    name: 'Classwork',
-    remarkPlaceholder: 'e.g. Completes tasks ahead of time and helps peers; could share ideas more verbally…',
+    id: 'exam',
+    icon: '📋',
+    name: 'Exam Performance',
+    remarkPlaceholder: 'e.g. Performed well in Paper 1 but lost marks on open-ended questions in Paper 2…',
     keywords: {
-      good: ['actively participates','contributes ideas','on-task','helpful to peers','quick to complete','engaged','takes initiative','asks good questions','collaborative','focused','productive','demonstrates understanding','responsive','sharp','reliable'],
-      mid:  ['sometimes participates','occasionally off-task','needs prompting','average contribution','inconsistent','passive at times','variable pace','partially engaged','selective participation','needs encouragement','average productivity','can do better','dependent on teacher','distracted at times','mediocre'],
-      poor: ['rarely participates','frequently off-task','uncooperative','disruptive','disengaged','slow to start','avoids tasks','ignores instructions','minimal contribution','refuses to engage','wastes class time','poor effort','problematic','inattentive','counterproductive']
+      good: ['distinction','excellent','top of class','well-prepared','strong grasp','high marks','outstanding performance','exceeded expectations','mastery demonstrated','impressive','confident','comprehensive','exemplary','remarkable','stellar'],
+      mid:  ['average','borderline pass','needs more revision','satisfactory','moderate','room to grow','could do better','passing','developing','inconsistent','adequate','fair performance','below potential','improving','needs support'],
+      poor: ['failed','very low marks','significant gaps','needs remediation','below passing','weak','struggling','critical intervention needed','poor performance','unsatisfactory','far below expectations','insufficient','alarming','negligible','must improve urgently']
     }
   },
   {
     id: 'skills',
     icon: '🛠️',
-    name: 'Skills',
+    name: 'Skills (PE & PA)',
     remarkPlaceholder: 'e.g. Demonstrates excellent laboratory technique; data recording needs attention…',
     keywords: {
       good: ['highly skilled','technically proficient','excellent execution','creative application','accurate','precise','strong command','confident handling','exceptional dexterity','innovative','fluid','masterful','well-developed','polished','versatile'],
@@ -750,23 +767,12 @@ const CATEGORIES = [
   {
     id: 'theory',
     icon: '📖',
-    name: 'Theory',
+    name: 'Theory (PE & PA)',
     remarkPlaceholder: 'e.g. Can recall definitions well but needs to practise applying concepts to new contexts…',
     keywords: {
       good: ['excellent conceptual grasp','well-versed','insightful','articulate','strong foundation','demonstrates deep understanding','applies knowledge','analytical','connects concepts','thoughtful','clear explanations','thorough knowledge','academic strength','comprehensive','intellectually curious'],
       mid:  ['basic understanding','surface-level knowledge','needs reinforcement','average grasp','partially understood','inconsistent','requires revision','can explain simply','limited depth','needs more reading','fair knowledge','developing','adequate','incomplete understanding','variable'],
       poor: ['very limited understanding','confused','unable to explain','poor theoretical base','significant gaps','struggles with concepts','needs reteaching','no foundation','memorises without understanding','very weak','cannot apply knowledge','insufficient','alarming','fails to grasp','requires urgent support']
-    }
-  },
-  {
-    id: 'project',
-    icon: '🗂️',
-    name: 'Project',
-    remarkPlaceholder: 'e.g. Led the group effectively during the science model project; presentation was confident…',
-    keywords: {
-      good: ['outstanding output','well-researched','highly organised','creative','collaborative','takes ownership','meets deadlines','thorough','innovative','detailed planning','strong presentation','exceeds expectations','initiative shown','impactful','self-motivated'],
-      mid:  ['adequate effort','partially completed','needs more depth','some collaboration','met basic requirements','average quality','inconsistent planning','satisfactory output','could be more organised','needs guidance','surface-level research','variable contribution','acceptable','room to improve','dependent'],
-      poor: ['poorly executed','incomplete','minimal effort','unorganised','fails to collaborate','misses deadlines','below standard','lacks planning','insufficient research','very weak output','careless','unsatisfactory','barely attempted','neglected','requires significant support']
     }
   }
 ];
@@ -859,15 +865,72 @@ function selectGender(g) {
   document.getElementById('btn-female').classList.toggle('active', g === 'female');
 }
 
-function onSubjectChange() {
-  const val = document.getElementById('subject-select').value;
-  document.getElementById('custom-subject-wrap').style.display = val === 'other' ? 'flex' : 'none';
+// ─── SUBJECT DATA BY YEAR ─────────────────────────────────
+const SUBJECTS = {
+  '1': ['Art & Design','English','Global Perspectives (GP)','Information & Communication Technology (ICT)','Malay','Mandarin','Mathematics','Music','Physical Education (PE)','Science'],
+  '2': ['Art & Design','English','Global Perspectives (GP)','Information & Communication Technology (ICT)','Malay (Advanced)','Malay (Intermediate)','Malay (Beginner)','Mandarin (Advanced)','Mandarin (Intermediate)','Mandarin (Beginner)','Mathematics','Music','Physical Education (PE)','Science'],
+  '3': ['Art & Design','English','Global Perspectives (GP)','Information & Communication Technology (ICT)','Malay (Advanced)','Malay (Intermediate)','Malay (Beginner)','Mandarin (Advanced)','Mandarin (Intermediate)','Mandarin (Beginner)','Mathematics','Music','Physical Education (PE)','Science'],
+  '4': ['Art & Design','English','Global Perspectives (GP)','Information & Communication Technology (ICT)','Malay (Advanced)','Malay (Intermediate)','Malay (Beginner)','Mandarin (Advanced)','Mandarin (Intermediate)','Mandarin (Beginner)','Mathematics','Music','Physical Education (PE)','Science'],
+  '5': ['Art & Design','English','Global Perspectives (GP)','Information & Communication Technology (ICT)','Malay (Advanced)','Malay (Intermediate)','Malay (Beginner)','Mandarin (Advanced)','Mandarin (Intermediate)','Mandarin (Beginner)','Mathematics','Music','Physical Education (PE)','Science'],
+  '6': ['Art & Design','English','Global Perspectives (GP)','Information & Communication Technology (ICT)','Malay (Advanced)','Malay (Intermediate)','Malay (Beginner)','Mandarin (Advanced)','Mandarin (Intermediate)','Mandarin (Beginner)','Mathematics','Music','Physical Education (PE)','Science'],
+  '7': ['Art & Design','English','Global Perspectives (GP)','Information & Communication Technology (ICT)','Malay','Mandarin (Foreign Language)','Mandarin (Beginner)','Mathematics','Music','Physical Education (PE)','Science'],
+  '8': ['Art & Design','English','Global Perspectives (GP)','Information & Communication Technology (ICT)','Malay','Mandarin (Foreign Language)','Mandarin (Beginner)','Mathematics','Music','Physical Education (PE)','Science'],
+  '9': ['Art & Design','English','Global Perspectives (GP)','Information & Communication Technology (ICT)','Malay','Mandarin (Foreign Language)','Mandarin (Beginner)','Mathematics','Music','Physical Education (PE)','Science'],
+  '10-Science': ['Accounting','Additional Mathematics','Biology','Chemistry','First Language English','English as a Second Language','Global Perspectives (GP)','Information & Communication Technology (ICT)','Malay','Mandarin','Mathematics','Physical Education (PE)','Physics'],
+  '10-Commerce': ['Accounting','Additional Mathematics','Business','Combined Science','Economics','First Language English','English as a Second Language','Global Perspectives (GP)','Information & Communication Technology (ICT)','Malay','Mandarin','Mathematics','Physical Education (PE)'],
+  '11-Science': ['Accounting','Additional Mathematics','Biology','Chemistry','First Language English','English as a Second Language','Global Perspectives (GP)','Information & Communication Technology (ICT)','Mathematics','Physical Education (PE)','Physics'],
+  '11-Commerce': ['Accounting','Additional Mathematics','Business','Combined Science','Economics','First Language English','English as a Second Language','Global Perspectives (GP)','Information & Communication Technology (ICT)','Mathematics','Physical Education (PE)'],
+};
+
+function onYearChange() {
+  const year = document.getElementById('year-select').value;
+  const streamWrap = document.getElementById('stream-wrap');
+  const subjectWrap = document.getElementById('subject-wrap');
+  const streamSelect = document.getElementById('stream-select');
+
+  // Reset stream and subject
+  streamSelect.value = '';
+  document.getElementById('subject-select').innerHTML = '<option value="">&#8212; Select subject &#8212;</option>';
+
+  if (!year) {
+    streamWrap.style.display = 'none';
+    subjectWrap.style.display = 'none';
+    return;
+  }
+
+  if (year === '10' || year === '11') {
+    streamWrap.style.display = 'flex';
+    subjectWrap.style.display = 'none';
+  } else {
+    streamWrap.style.display = 'none';
+    populateSubjects(SUBJECTS[year] || []);
+    subjectWrap.style.display = 'flex';
+  }
+}
+
+function onStreamChange() {
+  const year = document.getElementById('year-select').value;
+  const stream = document.getElementById('stream-select').value;
+  const subjectWrap = document.getElementById('subject-wrap');
+  if (!stream) { subjectWrap.style.display = 'none'; return; }
+  const key = year + '-' + stream;
+  populateSubjects(SUBJECTS[key] || []);
+  subjectWrap.style.display = 'flex';
+}
+
+function populateSubjects(list) {
+  const sel = document.getElementById('subject-select');
+  sel.innerHTML = '<option value="">&#8212; Select subject &#8212;</option>';
+  list.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s;
+    opt.textContent = s;
+    sel.appendChild(opt);
+  });
 }
 
 function getSubject() {
-  const sel = document.getElementById('subject-select').value;
-  if (sel === 'other') return document.getElementById('custom-subject').value.trim() || 'the subject';
-  return sel || '';
+  return document.getElementById('subject-select').value || '';
 }
 
 // ─── GENERATE ─────────────────────────────────────────────
@@ -882,6 +945,9 @@ async function generateComment() {
   if (activeCats.length === 0) { alert('Please select at least a few keywords or add remarks in one category.'); return; }
 
   const subject = getSubject();
+  const yearVal = document.getElementById('year-select').value;
+  const streamVal = document.getElementById('stream-select') ? document.getElementById('stream-select').value : '';
+  const yearLabel = yearVal ? ('Year ' + yearVal + (streamVal ? ' (' + streamVal + ' Stream)' : '')) : '';
   const pronoun  = selectedGender === 'male' ? 'he/him/his' : 'she/her/hers';
   const he       = selectedGender === 'male' ? 'He'  : 'She';
   const his      = selectedGender === 'male' ? 'his' : 'her';
@@ -896,7 +962,10 @@ async function generateComment() {
   }).join('\n');
 
   const extraNotes = document.getElementById('extra-notes').value.trim();
-  const subjectLine = subject ? `The student's subject is: ${subject}.` : '';
+  const subjectLine = [
+    yearLabel ? `Year group: ${yearLabel}.` : '',
+    subject ? `Subject: ${subject}.` : ''
+  ].filter(Boolean).join(' ');
 
   const prompt = `You are an experienced, caring teacher writing a formal end-of-term report comment for a student. Your task is to produce a well-structured, fluent, and constructive English comment following the HAMBURGER METHOD described below.
 
@@ -932,7 +1001,7 @@ STYLE GUIDELINES:
   const commentText = document.getElementById('comment-text');
   resultCard.classList.add('visible');
   document.getElementById('result-student-tag').textContent = `${name} · ${selectedGender === 'male' ? 'Male' : 'Female'}`;
-  document.getElementById('result-subject-tag').textContent = subject || 'No subject selected';
+  document.getElementById('result-subject-tag').textContent = [yearLabel, subject].filter(Boolean).join(' · ') || 'No subject selected';
   commentText.innerHTML = `<div class="loading-state"><div class="dot-pulse"><span></span><span></span><span></span></div> Crafting comment…</div>`;
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
