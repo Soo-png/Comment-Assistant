@@ -442,6 +442,41 @@
     .copy-btn, .regen-btn { min-width: unset; }
   }
 
+  /* RESET BUTTONS */
+  .reset-btn {
+    flex: 1;
+    padding: 13px 16px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.4;
+    transition: all 0.18s;
+    border: 1.5px solid var(--border);
+  }
+  .reset-keep {
+    background: var(--teal-light);
+    color: var(--teal);
+    border-color: var(--teal-mid);
+  }
+  .reset-keep:hover {
+    background: var(--teal);
+    color: #fff;
+    border-color: var(--teal);
+  }
+  .reset-full {
+    background: var(--surface);
+    color: var(--text-mid);
+    border-color: var(--border);
+  }
+  .reset-full:hover {
+    background: var(--red-light);
+    border-color: var(--red);
+    color: var(--red);
+  }
+
   /* ── PASSWORD GATE ── */
   #password-gate {
     position: fixed;
@@ -652,6 +687,14 @@
   <button class="generate-btn" id="gen-btn" onclick="generateComment()">
     <span>✨</span> Generate Comment
   </button>
+  <div style="display:flex;gap:12px;">
+    <button class="reset-btn reset-keep" onclick="resetKeep()" title="Keep year, stream and subject">
+      🔄 Next Student<br><span style="font-size:11px;font-weight:400;opacity:0.75;">Keep year &amp; subject</span>
+    </button>
+    <button class="reset-btn reset-full" onclick="resetAll()" title="Clear everything">
+      ✖ Full Reset<br><span style="font-size:11px;font-weight:400;opacity:0.75;">Clear everything</span>
+    </button>
+  </div>
 
   <!-- RESULT -->
   <div class="result-card" id="result-card">
@@ -1104,6 +1147,83 @@ async function checkPassword() {
   } catch (e) {
     errorEl.textContent = 'Connection error. Please refresh and try again.';
   }
+}
+
+// ─── RESET ────────────────────────────────────────────────
+function resetKeep() {
+  // Clear name only
+  document.getElementById('student-name').value = '';
+
+  // Clear gender
+  selectedGender = null;
+  document.getElementById('btn-male').classList.remove('active');
+  document.getElementById('btn-female').classList.remove('active');
+
+  // Unselect all keywords and clear remarks — keep year/stream/subject
+  CATEGORIES.forEach(cat => {
+    selectedKeywords[cat.id] = [];
+    categoryRemarks[cat.id] = '';
+    document.querySelectorAll(`[data-cat="${cat.id}"]`).forEach(chip => chip.classList.remove('selected'));
+    const remark = document.getElementById('remark-' + cat.id);
+    if (remark) remark.value = '';
+    updateCount(cat.id);
+    document.getElementById('cat-' + cat.id).classList.remove('open');
+  });
+
+  // Clear extra notes
+  document.getElementById('extra-notes').value = '';
+
+  // Hide result
+  document.getElementById('result-card').classList.remove('visible');
+  document.getElementById('comment-text').textContent = '';
+  document.getElementById('error-banner').classList.remove('visible');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetAll() {
+  // Clear name
+  document.getElementById('student-name').value = '';
+
+  // Clear gender
+  selectedGender = null;
+  document.getElementById('btn-male').classList.remove('active');
+  document.getElementById('btn-female').classList.remove('active');
+
+  // Reset year / stream / subject
+  document.getElementById('year-select').value = '';
+  const streamWrap = document.getElementById('stream-wrap');
+  const subjectWrap = document.getElementById('subject-wrap');
+  if (streamWrap) { streamWrap.style.display = 'none'; document.getElementById('stream-select').value = ''; }
+  if (subjectWrap) { subjectWrap.style.display = 'none'; document.getElementById('subject-select').innerHTML = '<option value="">&#8212; Select subject &#8212;</option>'; }
+
+  // Unselect all keywords and clear remarks
+  CATEGORIES.forEach(cat => {
+    selectedKeywords[cat.id] = [];
+    categoryRemarks[cat.id] = '';
+    // Unselect chips
+    document.querySelectorAll(`[data-cat="${cat.id}"]`).forEach(chip => chip.classList.remove('selected'));
+    // Clear remark textarea
+    const remark = document.getElementById('remark-' + cat.id);
+    if (remark) remark.value = '';
+    // Reset count badge
+    updateCount(cat.id);
+    // Close accordion
+    document.getElementById('cat-' + cat.id).classList.remove('open');
+  });
+
+  // Clear extra notes
+  document.getElementById('extra-notes').value = '';
+
+  // Hide result card
+  document.getElementById('result-card').classList.remove('visible');
+  document.getElementById('comment-text').textContent = '';
+
+  // Hide error banner
+  document.getElementById('error-banner').classList.remove('visible');
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 initGate();
