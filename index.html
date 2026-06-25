@@ -967,34 +967,49 @@ async function generateComment() {
     subject ? `Subject: ${subject}.` : ''
   ].filter(Boolean).join(' ');
 
-  const prompt = `You are an experienced, caring teacher writing a formal end-of-term report comment for a student. Your task is to produce a well-structured, fluent, and constructive English comment following the HAMBURGER METHOD described below.
+  // Dynamic length based on number of active categories selected
+  const catCount = activeCats.length;
+  let lengthGuide, fillingGuide;
+  if (catCount <= 2) {
+    lengthGuide = '4–5 sentences total';
+    fillingGuide = '1–2 sentences covering the selected areas briefly';
+  } else if (catCount <= 4) {
+    lengthGuide = '7–8 sentences total';
+    fillingGuide = '3–4 sentences covering the selected areas';
+  } else if (catCount <= 6) {
+    lengthGuide = '9–10 sentences total';
+    fillingGuide = '5–6 sentences covering the selected areas in detail';
+  } else {
+    lengthGuide = '11–16 sentences total';
+    fillingGuide = '7–10 sentences elaborating thoroughly on all selected areas';
+  }
+
+  const prompt = `You are an experienced teacher writing a formal end-of-term report comment. Write a well-structured, professional, and balanced English comment following the HAMBURGER METHOD below.
 
 STUDENT: ${name}
-PRONOUNS: ${pronoun} (use consistently throughout)
+PRONOUNS: ${pronoun} (use consistently)
 ${subjectLine}
 
-PERFORMANCE DATA PROVIDED BY THE TEACHER:
-${catDetails}${extraNotes ? `\n\nOverall additional notes: ${extraNotes}` : ''}
+PERFORMANCE DATA:
+${catDetails}${extraNotes ? `\nAdditional notes: ${extraNotes}` : ''}
 
 ---
-HAMBURGER METHOD – Structure your comment exactly as follows:
+HAMBURGER METHOD:
 
-1. TOP BUN – Opening sentence: Give a warm, positive overall impression of the student's general performance in ${subject || 'the subject'}. Mention their overall effort or character. This sentence sets the tone.
+1. TOP BUN (1 sentence): A warm, honest opening that reflects the student's overall character or effort in ${subject || 'the subject'}. Set a balanced tone — acknowledge positives without overstating them.
 
-2. FILLING – Body (2–4 sentences): Break down specific categories from the data above. Elaborate meaningfully on each area highlighted — do not just list keywords; explain what they mean in practice. Naturally weave the keywords and teacher's notes into coherent observations. Where both strengths and weaknesses exist across different categories, address both. Maintain good sentence flow and logical transitions between points.
+2. FILLING (${fillingGuide}): Address each selected area naturally and specifically. Do not merely list keywords — explain what they mean in context. Where weaknesses exist alongside strengths, acknowledge both honestly but constructively. Keep transitions smooth.
 
-3. BOTTOM BUN – Closing (2 sentences):
-   (a) Identify 1–2 clear, specific areas for improvement and briefly suggest how ${he} can work on them.
-   (b) End with a sincere, encouraging sentence that motivates the student to keep growing.
+3. BOTTOM BUN (1–2 sentences): Name one specific, actionable area for improvement and briefly suggest how ${he} can address it. Close with a genuine, measured word of encouragement — sincere but not excessive.
 
 ---
-STYLE GUIDELINES:
-- Write in formal, warm educator language (not overly stiff, not casual)
-- Do NOT begin with the student's name
-- Use ${name} only once, naturally within the comment
-- Avoid bullet points or numbered lists — write in full paragraphs
-- Total length: 6–9 sentences
-- Output ONLY the comment text. No title, no label, no preamble.`;
+RULES:
+- Total length: ${lengthGuide}
+- Formal, warm educator tone — not harsh, not overly flattering
+- Do NOT start with the student's name; use ${name} only once inside the comment
+- No bullet points or lists — full prose paragraphs only
+- Only comment on what was provided; do not invent details
+- Output ONLY the comment text, nothing else.\`;
 
   // UI
   const resultCard  = document.getElementById('result-card');
